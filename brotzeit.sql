@@ -27,8 +27,11 @@ CREATE TABLE OrderType (
   PRIMARY KEY (OrderTypeID)
 );
 
+-- diaz
 CREATE TABLE Category (
-
+  CategoryID INTEGER,
+  CategoryName VARCHAR(50),
+  PRIMARY KEY (CategoryID) 
 );
 -- atienza
 CREATE TABLE AddressBook (
