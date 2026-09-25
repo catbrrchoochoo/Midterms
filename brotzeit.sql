@@ -20,30 +20,27 @@ CREATE TABLE Store (
   StoreAddress VARCHAR(100),
   PRIMARY KEY (StoreID)
 );
-
--- diaz
+-- atienza
 CREATE TABLE OrderType ( 
-  OrderTypeID INTEGER,
-  OrderTypeName VARCHAR(50),
+  OrderTypeID INTEGER, 
+  OrderTypeName VARCHAR(30),
   PRIMARY KEY (OrderTypeID)
 );
 
--- diaz
 CREATE TABLE Category (
-  CategoryID INTEGER,
-  CategoryName VARCHAR(50),
-  PRIMARY KEY (CategoryID)
-);
 
--- diaz
+);
+-- atienza
 CREATE TABLE AddressBook (
-  AddressID INTEGER,
-  CustomerID INTEGER,
-  AddressLabel VARCHAR(100),
-  AddressLine VARCHAR(50),
-  PostalCode VARCHAR(20),
-  PRIMARY KEY (AddressID), 
-  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+   AddressID INTEGER,
+   CustomerID INTEGER,
+   Address VARCHAR(100), 
+   AddressLabel  VARCHAR(10), -- "Home" or "Work" or "School"
+   AddressLine VARCHAR(50),
+   PostalCode INT(4), -- "8000"
+   PRIMARY KEY (AddressID),
+  FOREIGN KEY (CustomerID)
+  REFERENCES Customer(CustomerID)
 );
 
 --bayquen
