@@ -60,8 +60,17 @@ CREATE TABLE `Order` (
 
 );
 
+-- diaz
 CREATE TABLE OrderItem (
-
+  OrderItemID INTEGER,
+  OrderID INTEGER,
+  MenuItemID INTEGER,
+  Quantity INTEGER,
+  UnitPrice DECIMAL(10,2),
+  Subtotal DECIMAL(10,2),
+  PRIMARY KEY (OrderItemID),
+  FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID),
+  FOREIGN KEY (MenuItemID) REFERENCES MenuItem(MenuItemID) 
 );
 
 CREATE TABLE Delivery (
