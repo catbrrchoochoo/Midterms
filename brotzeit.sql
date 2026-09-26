@@ -71,7 +71,7 @@ CREATE TABLE MenuItem (
 );
 
 -- might change name of this entity, kay mag error siya if dili nako butngan ug ingana from akong gisearch (feel free to erase this comment)
-CREATE TABLE `Order` ( 
+CREATE TABLE Orders ( 
     OrderID INTEGER,
     CustomerID INTEGER,
     StoreID INTEGER,
@@ -93,7 +93,7 @@ CREATE TABLE OrderItem (
   UnitPrice DECIMAL(10,2),
   Subtotal DECIMAL(10,2),
   PRIMARY KEY (OrderItemID),
-  FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID),
+  FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
   FOREIGN KEY (MenuItemID) REFERENCES MenuItem(MenuItemID) 
 );
 
@@ -105,7 +105,7 @@ CREATE TABLE Delivery (
   DeliveryStatus VARCHAR(20),
   DeliveryDateTime DATETIME,
   PRIMARY KEY (DeliveryID),
-  FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID),
+  FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
   FOREIGN KEY (AddressID) REFERENCES AddressBook(AddressID)
 );
 
@@ -116,7 +116,7 @@ CREATE TABLE Payment (
     PaymentAmount DECIMAL(10,2),
     PaymentStatus VARCHAR(20),
     PRIMARY KEY (PaymentID),
-    FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     FOREIGN KEY (PaymentMethodID) REFERENCES PaymentMethod(PaymentMethodID)
 );
 
@@ -178,7 +178,7 @@ INSERT INTO MenuItem VALUES
 (60008, 30003, 'Sausage Platter', 'Assorted German sausages', 36.00, FALSE);
 
 
-INSERT INTO `Order` VALUES
+INSERT INTO Orders VALUES
 (70001, 10001, 20001, '2026-09-24 12:30:00', 2, 'Completed'),
 (70002, 10002, 20002, '2026-09-24 13:15:00', 1, 'Completed'),
 (70003, 10003, 20003, '2026-09-24 18:00:00', 2, 'Preparing'),
@@ -228,7 +228,7 @@ SELECT * FROM PaymentMethod;
 
 SELECT * FROM MenuItem;
 
-SELECT * FROM `Order`;
+SELECT * FROM Orders;
 
 SELECT * FROM OrderItem;
 
@@ -248,35 +248,35 @@ ON MenuItem.CategoryID = Category.CategoryID;
 
 
 SELECT Customer.CustomerName,
-       `Order`.OrderID,
-       `Order`.OrderDate,
-       `Order`.OrderStatus
+       Orders.OrderID,
+       Orders.OrderDate,
+       Orders.OrderStatus
 FROM Customer
-INNER JOIN `Order`
-ON Customer.CustomerID = `Order`.CustomerID;
+INNER JOIN Orders
+ON Customer.CustomerID = Orders.CustomerID;
 
 
 SELECT Customer.CustomerName,
-       `Order`.OrderID,
+       Orders.OrderID,
        Store.StoreName,
        OrderType.OrderTypeName
-FROM `Order`
+FROM Orders
 INNER JOIN Customer
-ON `Order`.CustomerID = Customer.CustomerID
+ON Orders.CustomerID = Customer.CustomerID
 INNER JOIN Store
-ON `Order`.StoreID = Store.StoreID
+ON Orders.StoreID = Store.StoreID
 INNER JOIN OrderType
-ON `Order`.OrderTypeID = OrderType.OrderTypeID;
+ON Orders.OrderTypeID = OrderType.OrderTypeID;
 
 
-SELECT `Order`.OrderID,
+SELECT Orders.OrderID,
        MenuItem.ItemName,
        OrderItem.Quantity,
        OrderItem.UnitPrice,
        OrderItem.Subtotal
 FROM OrderItem
-INNER JOIN `Order`
-ON OrderItem.OrderID = `Order`.OrderID
+INNER JOIN Orders
+ON OrderItem.OrderID = Orders.OrderID
 INNER JOIN MenuItem
 ON OrderItem.MenuItemID = MenuItem.MenuItemID;
 
@@ -292,30 +292,30 @@ ON Customer.CustomerID = AddressBook.CustomerID;
 
 
 SELECT Customer.CustomerName,
-       `Order`.OrderID,
+       Orders.OrderID,
        Delivery.DeliveryStatus,
        Delivery.DeliveryDateTime,
        AddressBook.Address
 FROM Delivery
-INNER JOIN `Order`
-ON Delivery.OrderID = `Order`.OrderID
+INNER JOIN Orders
+ON Delivery.OrderID = Orders.OrderID
 INNER JOIN Customer
-ON `Order`.CustomerID = Customer.CustomerID
+ON Orders.CustomerID = Customer.CustomerID
 INNER JOIN AddressBook
 ON Delivery.AddressID = AddressBook.AddressID;
 
 
 SELECT Customer.CustomerName,
-       `Order`.OrderID,
+       Orders.OrderID,
        Payment.PaymentAmount,
        Payment.PaymentStatus,
        PaymentMethod.MethodType,
        PaymentMethod.CardCompany
 FROM Payment
-INNER JOIN `Order`
-ON Payment.OrderID = `Order`.OrderID
+INNER JOIN Orders
+ON Payment.OrderID = Orders.OrderID
 INNER JOIN Customer
-ON `Order`.CustomerID = Customer.CustomerID
+ON Orders.CustomerID = Customer.CustomerID
 INNER JOIN PaymentMethod
 ON Payment.PaymentMethodID = PaymentMethod.PaymentMethodID;
 
@@ -324,4 +324,3 @@ SELECT MenuItem.ItemName,
        MenuItem.ItemPrice
 FROM MenuItem
 WHERE MenuItem.Availability = TRUE;
-
