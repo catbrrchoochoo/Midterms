@@ -63,8 +63,8 @@ CREATE TABLE MenuItem (
     CategoryID INTEGER,
     ItemName VARCHAR(100),
     ItemDescription VARCHAR(255),
-    ItemPrice DECIMAL(10,2),
-    Availability BIT,
+    ItemPrice DECIMAL(5,2),
+    Availability VARCHAR(20),
     PRIMARY KEY (MenuItemID),
     FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
@@ -74,7 +74,7 @@ CREATE TABLE Orders (
     OrderID INTEGER,
     CustomerID INTEGER,
     StoreID INTEGER,
-    OrderDate DATETIME,
+    OrderDateTime DATETIME,
     OrderTypeID INTEGER,
     OrderStatus VARCHAR(30),
     PRIMARY KEY (OrderID),
@@ -89,7 +89,7 @@ CREATE TABLE OrderItem (
   OrderID INTEGER,
   MenuItemID INTEGER,
   Quantity INTEGER,
-  UnitPrice DECIMAL(10,2),
+  UnitPrice DECIMAL(5,2),
   Subtotal DECIMAL(10,2),
   PRIMARY KEY (OrderItemID),
   FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
@@ -167,14 +167,14 @@ INSERT INTO PaymentMethod VALUES
 
 
 INSERT INTO MenuItem VALUES
-(60001, 30002, 'Pretzel', 'Traditional German baked pretzel', 8.00, 1),
-(60002, 30003, 'Pork Knuckle', 'Crispy roasted pork knuckle', 42.00, 1),
-(60003, 30003, 'Chicken Schnitzel', 'Breaded chicken schnitzel', 28.00, 1),
-(60004, 30004, 'Truffle Fries', 'Fries with truffle seasoning', 12.00, 1),
-(60005, 30005, 'Apple Strudel', 'Warm apple strudel dessert', 14.00, 1),
-(60006, 30006, 'Apple Juice', 'Chilled apple juice', 6.00, 1),
-(60007, 30001, 'Brotzeit Family Bundle', 'Selection of Brotzeit favourites', 88.00, 1),
-(60008, 30003, 'Sausage Platter', 'Assorted German sausages', 36.00, 0);
+(60001, 30002, 'Pretzel', 'Traditional German baked pretzel', 8.00, 'Available'),
+(60002, 30003, 'Pork Knuckle', 'Crispy roasted pork knuckle', 42.00, 'Available'),
+(60003, 30003, 'Chicken Schnitzel', 'Breaded chicken schnitzel', 28.00, 'Available'),
+(60004, 30004, 'Truffle Fries', 'Fries with truffle seasoning', 12.00, 'Available'),
+(60005, 30005, 'Apple Strudel', 'Warm apple strudel dessert', 14.00, 'Available'),
+(60006, 30006, 'Apple Juice', 'Chilled apple juice', 6.00, 'Available'),
+(60007, 30001, 'Brotzeit Family Bundle', 'Selection of Brotzeit favourites', 88.00, 'Available'),
+(60008, 30003, 'Sausage Platter', 'Assorted German sausages', 36.00, 'Unavailable');
 
 
 INSERT INTO Orders VALUES
@@ -213,29 +213,41 @@ INSERT INTO Payment VALUES
 (91005, 70005, 50005, 64.00, 'Paid');
 
 
+-- shows all customer records
 SELECT * FROM Customer;
 
+-- shows all store records
 SELECT * FROM Store;
 
+-- shows the available order types such as pickup and delivery
 SELECT * FROM OrderType;
 
+-- shows all menu categories
 SELECT * FROM Category;
 
+-- shows all saved customer addresses
 SELECT * FROM AddressBook;
 
+-- shows all saved customer payment methods
 SELECT * FROM PaymentMethod;
 
+-- shows all menu items and their details
 SELECT * FROM MenuItem;
 
+-- shows all customer orders
 SELECT * FROM Orders;
 
+-- shows all individual items included in orders
 SELECT * FROM OrderItem;
 
+-- shows all delivery records
 SELECT * FROM Delivery;
 
+-- shows all payment records
 SELECT * FROM Payment;
 
 
+-- shows menu items together with their category
 SELECT MenuItem.MenuItemID,
        MenuItem.ItemName,
        MenuItem.ItemDescription,
@@ -246,15 +258,17 @@ INNER JOIN Category
 ON MenuItem.CategoryID = Category.CategoryID;
 
 
+-- shows which customer made each order and its status
 SELECT Customer.CustomerName,
        Orders.OrderID,
-       Orders.OrderDate,
+       Orders.OrderDateTime,
        Orders.OrderStatus
 FROM Customer
 INNER JOIN Orders
 ON Customer.CustomerID = Orders.CustomerID;
 
 
+-- shows each order together with the customer, store, and order type
 SELECT Customer.CustomerName,
        Orders.OrderID,
        Store.StoreName,
@@ -268,6 +282,7 @@ INNER JOIN OrderType
 ON Orders.OrderTypeID = OrderType.OrderTypeID;
 
 
+-- shows the menu items included in each order and their quantity and price
 SELECT Orders.OrderID,
        MenuItem.ItemName,
        OrderItem.Quantity,
@@ -280,6 +295,7 @@ INNER JOIN MenuItem
 ON OrderItem.MenuItemID = MenuItem.MenuItemID;
 
 
+-- shows each customer together with their saved addresses
 SELECT Customer.CustomerName,
        AddressBook.AddressLabel,
        AddressBook.Address,
@@ -290,6 +306,7 @@ INNER JOIN AddressBook
 ON Customer.CustomerID = AddressBook.CustomerID;
 
 
+-- shows delivery details together with the customer and delivery address
 SELECT Customer.CustomerName,
        Orders.OrderID,
        Delivery.DeliveryStatus,
@@ -304,6 +321,7 @@ INNER JOIN AddressBook
 ON Delivery.AddressID = AddressBook.AddressID;
 
 
+-- shows payment details together with the customer and payment method
 SELECT Customer.CustomerName,
        Orders.OrderID,
        Payment.PaymentAmount,
@@ -319,7 +337,8 @@ INNER JOIN PaymentMethod
 ON Payment.PaymentMethodID = PaymentMethod.PaymentMethodID;
 
 
+-- shows only menu items that are currently available
 SELECT MenuItem.ItemName,
        MenuItem.ItemPrice
 FROM MenuItem
-WHERE MenuItem.Availability = 1;
+WHERE MenuItem.Availability = 'Available';
