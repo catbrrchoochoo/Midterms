@@ -13,7 +13,6 @@ CREATE TABLE Customer (
 
 -- bayquen
 CREATE TABLE Store (
-  -- test
   StoreID INTEGER,
   StoreName VARCHAR(50),
   StorePhoneNumber VARCHAR(20),
@@ -40,9 +39,9 @@ CREATE TABLE AddressBook (
    AddressID INTEGER,
    CustomerID INTEGER,
    Address VARCHAR(100), 
-   AddressLabel  VARCHAR(10), -- "Home" or "Work" or "School"
+   AddressLabel VARCHAR(10), -- "Home" or "Work" or "School"
    AddressLine VARCHAR(50),
-   PostalCode INT(4), -- "8000"
+   PostalCode VARCHAR(10), -- "8000"
    PRIMARY KEY (AddressID),
    FOREIGN KEY (CustomerID)
    REFERENCES Customer(CustomerID)
@@ -65,12 +64,12 @@ CREATE TABLE MenuItem (
     ItemName VARCHAR(100),
     ItemDescription VARCHAR(255),
     ItemPrice DECIMAL(10,2),
-    Availability BOOLEAN,
+    Availability BIT,
     PRIMARY KEY (MenuItemID),
     FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
 
--- might change name of this entity, kay mag error siya if dili nako butngan ug ingana from akong gisearch (feel free to erase this comment)
+-- renamed
 CREATE TABLE Orders ( 
     OrderID INTEGER,
     CustomerID INTEGER,
@@ -168,14 +167,14 @@ INSERT INTO PaymentMethod VALUES
 
 
 INSERT INTO MenuItem VALUES
-(60001, 30002, 'Pretzel', 'Traditional German baked pretzel', 8.00, TRUE),
-(60002, 30003, 'Pork Knuckle', 'Crispy roasted pork knuckle', 42.00, TRUE),
-(60003, 30003, 'Chicken Schnitzel', 'Breaded chicken schnitzel', 28.00, TRUE),
-(60004, 30004, 'Truffle Fries', 'Fries with truffle seasoning', 12.00, TRUE),
-(60005, 30005, 'Apple Strudel', 'Warm apple strudel dessert', 14.00, TRUE),
-(60006, 30006, 'Apple Juice', 'Chilled apple juice', 6.00, TRUE),
-(60007, 30001, 'Brotzeit Family Bundle', 'Selection of Brotzeit favourites', 88.00, TRUE),
-(60008, 30003, 'Sausage Platter', 'Assorted German sausages', 36.00, FALSE);
+(60001, 30002, 'Pretzel', 'Traditional German baked pretzel', 8.00, 1),
+(60002, 30003, 'Pork Knuckle', 'Crispy roasted pork knuckle', 42.00, 1),
+(60003, 30003, 'Chicken Schnitzel', 'Breaded chicken schnitzel', 28.00, 1),
+(60004, 30004, 'Truffle Fries', 'Fries with truffle seasoning', 12.00, 1),
+(60005, 30005, 'Apple Strudel', 'Warm apple strudel dessert', 14.00, 1),
+(60006, 30006, 'Apple Juice', 'Chilled apple juice', 6.00, 1),
+(60007, 30001, 'Brotzeit Family Bundle', 'Selection of Brotzeit favourites', 88.00, 1),
+(60008, 30003, 'Sausage Platter', 'Assorted German sausages', 36.00, 0);
 
 
 INSERT INTO Orders VALUES
@@ -323,4 +322,4 @@ ON Payment.PaymentMethodID = PaymentMethod.PaymentMethodID;
 SELECT MenuItem.ItemName,
        MenuItem.ItemPrice
 FROM MenuItem
-WHERE MenuItem.Availability = TRUE;
+WHERE MenuItem.Availability = 1;
