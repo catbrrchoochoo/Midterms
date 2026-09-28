@@ -160,8 +160,11 @@ INSERT INTO AddressBook VALUES
 (40003, 10002, '25 Marina Boulevard', 'Office', '#14-03', '018989'),
 (40004, 10003, '8 Sentosa Gateway', 'Home', '#03-15', '098269'),
 (40005, 10004, '15 Clementi Road', 'Home', '#07-02', '129748'),
-(40006, 10005, '20 Jurong East Street', 'Office', '#10-05', '609601');
-
+(40006, 10005, '20 Jurong East Street', 'Office', '#10-05', '609601'),
+(40007, 10006, '16 Market Street', 'Home', '#06-10', '062679'),
+(40008, 10007, '5 Purvis Street', 'Office', '#18-06', '098185'),
+(40009, 10008, '28 German Beer Bar', 'Home', '#07-02', '092073'),
+(40010, 10009, '2 Marina Bay', 'Office', '#02-13', '155167');
 
 INSERT INTO PaymentMethod VALUES
 (50001, 10001, 'Card', 'Visa', '4821'),
