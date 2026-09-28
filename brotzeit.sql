@@ -119,13 +119,18 @@ CREATE TABLE Payment (
     FOREIGN KEY (PaymentMethodID) REFERENCES PaymentMethod(PaymentMethodID)
 );
 
--- insert data next
+-- insert data next  -- atienza try
 INSERT INTO Customer VALUES
 (10001, 'Rin Kusigaki', 'RKusgaki@email.com', '+6599183282', NULL),
 (10002, 'Ryota Shinku', 'RyotaShinku@email.com', '+6598765432', 'Japan Solutions'),
 (10003, 'Shin Hikagami', 'SHikagami@email.com', '+6595551234', NULL),
 (10004, 'Gin Yosuke', 'GinYosuke@email.com', '+6598877665', NULL),
 (10005, 'Nobara Fins', 'NFins@email.com', '+6593344556', 'Nobara Trading');
+(10006, 'Inosuke Ryuu', 'InsukeR@email.com', '+6533889510', NULL),
+(10007, 'Hinata Shugen', 'HinataS@email.com', '+6558903722', 'Linear Corp'),
+(10008, 'Jugen Morgen', 'JrugenMrgen@email.com', '+6595598765', Survey Corps),
+(10009, 'Kin Jusuke', 'JKINN@email.com', '+6552907162', NULL),
+(10010, 'Eren Rosuke', 'ErenRske@email.com', '+6535820185', 'Jin Poly');
 
 
 INSERT INTO Store VALUES
