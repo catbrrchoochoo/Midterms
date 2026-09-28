@@ -128,7 +128,7 @@ INSERT INTO Customer VALUES
 (10005, 'Nobara Fins', 'NFins@email.com', '+6593344556', 'Nobara Trading');
 (10006, 'Inosuke Ryuu', 'InsukeR@email.com', '+6533889510', NULL),
 (10007, 'Hinata Shugen', 'HinataS@email.com', '+6558903722', 'Linear Corp'),
-(10008, 'Jugen Morgen', 'JrugenMrgen@email.com', '+6595598765', Survey Corps),
+(10008, 'Jugen Morgen', 'JrugenMrgen@email.com', '+6595598765', 'Survey Corps'),
 (10009, 'Kin Jusuke', 'JKINN@email.com', '+6552907162', NULL),
 (10010, 'Eren Rosuke', 'ErenRske@email.com', '+6535820185', 'Jin Poly');
 
@@ -153,7 +153,7 @@ INSERT INTO Category VALUES
 (30005, 'Desserts'),
 (30006, 'Beverages');
 
-
+-- diaz
 INSERT INTO AddressBook VALUES
 (40001, 10001, '10 Orchard Road', 'Home', '#05-12', '238840'),
 (40002, 10001, '1 Raffles Place', 'Office', '#20-01', '048616'),
@@ -212,13 +212,18 @@ INSERT INTO Delivery VALUES
 (90002, 70003, 40004, 'On the way', '2026-09-24 19:00:00'),
 (90003, 70005, 40006, 'Preparing', '2026-09-25 15:10:00');
 
-
+-- diaz
 INSERT INTO Payment VALUES
 (91001, 70001, 50001, 70.00, 'Paid'),
 (91002, 70002, 50002, 40.00, 'Paid'),
 (91003, 70003, 50003, 102.00, 'Paid'),
 (91004, 70004, 50004, 48.00, 'Paid'),
-(91005, 70005, 50005, 64.00, 'Paid');
+(91005, 70005, 50005, 64.00, 'Paid'),
+(91006, 70006, 50006, 80.00, 'Paid'),
+(91007, 70007, 50007, 50.00, 'Paid'),
+(91008, 70008, 50008, 110.00, 'Paid'),
+(91009, 70009, 50009, 88.00, 'Paid'),
+(91010, 70010, 50010, 30.00, 'Paid');
 
 
 -- shows all customer records
