@@ -121,11 +121,11 @@ CREATE TABLE Payment (
 
 -- insert data next
 INSERT INTO Customer VALUES
-(10001, 'Anna Lim', 'anna.lim@email.com', '+6591234567', NULL),
-(10002, 'Marcus Tan', 'marcus.tan@email.com', '+6598765432', 'Tan Solutions'),
-(10003, 'Sofia Lee', 'sofia.lee@email.com', '+6595551234', NULL),
-(10004, 'Daniel Wong', 'daniel.wong@email.com', '+6598877665', NULL),
-(10005, 'Rachel Ng', 'rachel.ng@email.com', '+6593344556', 'Ng Trading');
+(10001, 'Rin Kusigaki', 'RKusgaki@email.com', '+6599183282', NULL),
+(10002, 'Ryota Shinku', 'RyotaShinku@email.com', '+6598765432', 'Japan Solutions'),
+(10003, 'Shin Hikagami', 'SHikagami@email.com', '+6595551234', NULL),
+(10004, 'Gin Yosuke', 'GinYosuke@email.com', '+6598877665', NULL),
+(10005, 'Nobara Fins', 'NFins@email.com', '+6593344556', 'Nobara Trading');
 
 
 INSERT INTO Store VALUES
