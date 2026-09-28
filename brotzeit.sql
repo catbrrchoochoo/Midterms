@@ -1,5 +1,4 @@
 -- hellooo, add comment with your last name before each entity like ginawa ko below so kabalo ko aha mo naghelp
--- matic 10 sa eval basta may ginawa kayo thanksu, i'll check this saturday night lang para ipolish n whatevs
 
 -- bayquen
 CREATE TABLE Customer (
