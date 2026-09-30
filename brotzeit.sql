@@ -165,6 +165,7 @@ INSERT INTO AddressBook VALUES
 (40009, 10008, '28 German Beer Bar', 'Home', '#07-02', '092073'),
 (40010, 10009, '2 Marina Bay', 'Office', '#02-13', '155167');
 
+-- diaz
 INSERT INTO PaymentMethod VALUES
 (50001, 10001, 'Card', 'Visa', '4821'),
 (50002, 10002, 'Card', 'Mastercard', '7742'),
