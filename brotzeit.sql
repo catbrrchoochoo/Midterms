@@ -171,7 +171,11 @@ INSERT INTO PaymentMethod VALUES
 (50003, 10003, 'Card', 'Visa', '1098'),
 (50004, 10004, 'Card', 'Mastercard', '5512'),
 (50005, 10005, 'Card', 'Visa', '8803');
-
+(50006, 10006, 'Card', 'Visa', '4821'),
+(50007, 10007, 'Card', 'Mastercard', '7742'),
+(50008, 10008, 'Card', 'Visa', '1098'),
+(50009, 10009, 'Card', 'Mastercard', '5512'),
+(50010, 10010, 'Card', 'Visa', '8803');
 
 INSERT INTO MenuItem VALUES
 (60001, 30002, 'Pretzel', 'Traditional German baked pretzel', 8.00, 'Available'),
