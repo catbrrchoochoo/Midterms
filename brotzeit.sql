@@ -1,96 +1,106 @@
--- hellooo, add comment with your last name before each entity like ginawa ko below so kabalo ko aha mo naghelp
+       Category.CategoryName,
+       MenuItem.ItemName,
+       Variant.VariantName,
+       OrderItem.Quantity,
+       OrderItem.UnitPrice,
+       OrderItem.Subtotal
+FROM OrderItem
+INNER JOIN Orders
+ON OrderItem.OrderID = Orders.OrderID
+INNER JOIN MenuItem
+ON OrderItem.MenuItemID = MenuItem.MenuItemID
+INNER JOIN Category
+ON MenuItem.CategoryID = Category.CategoryID
+LEFT JOIN Variant
+ON OrderItem.VariantID = Variant.VariantID
+ORDER BY Orders.OrderID, OrderItem.OrderItemID;
 
 
--- bayquen
-CREATE TABLE Customer (
-  CustomerID INTEGER,
-  CustomerName VARCHAR(50),
-  CustomerEmail VARCHAR(100),
-  CustomerPhoneNumber VARCHAR(20),
-  OrganizationName VARCHAR(100),
-  PRIMARY KEY (CustomerID)
-);
+-- shows modifiers selected for completed orders
+SELECT Orders.OrderID,
+       MenuItem.ItemName,
+       Modifier.ModifierName,
+       ModifierChoice.ChoiceName,
+       ModifierChoice.AdditionalPrice,
+       OrderModifier.Quantity
+FROM OrderModifier
+INNER JOIN OrderItem
+ON OrderModifier.OrderItemID = OrderItem.OrderItemID
+INNER JOIN Orders
+ON OrderItem.OrderID = Orders.OrderID
+INNER JOIN MenuItem
+ON OrderItem.MenuItemID = MenuItem.MenuItemID
+INNER JOIN ModifierChoice
+ON OrderModifier.ModifierChoiceID = ModifierChoice.ModifierChoiceID
+INNER JOIN Modifier
+ON ModifierChoice.ModifierID = Modifier.ModifierID;
 
 
--- bayquen
-CREATE TABLE Store (
-  StoreID INTEGER,
-  StoreName VARCHAR(50),
-  StorePhoneNumber VARCHAR(20),
-  StoreAddress VARCHAR(150),
-  PRIMARY KEY (StoreID)
-);
+-- shows promotions used in customer orders
+SELECT Orders.OrderID,
+       Customer.CustomerName,
+       Promotion.PromoCode,
+       Promotion.PromoDescription,
+       OrderPromotion.DiscountAmount
+FROM OrderPromotion
+INNER JOIN Orders
+ON OrderPromotion.OrderID = Orders.OrderID
+INNER JOIN Customer
+ON Orders.CustomerID = Customer.CustomerID
+INNER JOIN Promotion
+ON OrderPromotion.PromotionID = Promotion.PromotionID;
 
 
--- atienza
-CREATE TABLE OrderType (
-  OrderTypeID INTEGER,
-  OrderTypeName VARCHAR(30),
-  PRIMARY KEY (OrderTypeID)
-);
+-- shows customer saved addresses
+SELECT Customer.CustomerName,
+       AddressBook.AddressLabel,
+       AddressBook.Address,
+       AddressBook.AddressLine,
+       AddressBook.PostalCode
+FROM Customer
+INNER JOIN AddressBook
+ON Customer.CustomerID = AddressBook.CustomerID;
 
 
--- diaz
-CREATE TABLE Category (
-  CategoryID INTEGER,
-  CategoryName VARCHAR(50),
-  PRIMARY KEY (CategoryID)
-);
+-- shows delivery details
+SELECT Customer.CustomerName,
+       Orders.OrderID,
+       Delivery.DeliveryStatus,
+       Delivery.DeliveryDateTime,
+       AddressBook.Address,
+       AddressBook.AddressLine,
+       AddressBook.PostalCode
+FROM Delivery
+INNER JOIN Orders
+ON Delivery.OrderID = Orders.OrderID
+INNER JOIN Customer
+ON Orders.CustomerID = Customer.CustomerID
+INNER JOIN AddressBook
+ON Delivery.AddressID = AddressBook.AddressID;
 
 
--- atienza
-CREATE TABLE AddressBook (
-  AddressID INTEGER,
-  CustomerID INTEGER,
-  Address VARCHAR(100),
-  AddressLabel VARCHAR(10),
-  AddressLine VARCHAR(50),
-  PostalCode VARCHAR(10),
-  PRIMARY KEY (AddressID),
-  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
-);
+-- shows payment details
+SELECT Customer.CustomerName,
+       Orders.OrderID,
+       Payment.PaymentAmount,
+       Payment.PaymentStatus,
+       PaymentMethod.MethodType,
+       PaymentMethod.CardCompany
+FROM Payment
+INNER JOIN Orders
+ON Payment.OrderID = Orders.OrderID
+INNER JOIN Customer
+ON Orders.CustomerID = Customer.CustomerID
+INNER JOIN PaymentMethod
+ON Payment.PaymentMethodID = PaymentMethod.PaymentMethodID;
 
 
--- bayquen
-CREATE TABLE PaymentMethod (
-  PaymentMethodID INTEGER,
-  CustomerID INTEGER,
-  MethodType VARCHAR(30),
-  CardCompany VARCHAR(30),
-  CardLastFour VARCHAR(4),
-  PRIMARY KEY (PaymentMethodID),
-  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
-);
-
-
-CREATE TABLE MenuItem (
-  MenuItemID INTEGER,
-  CategoryID INTEGER,
-  ItemName VARCHAR(100),
-  ItemDescription VARCHAR(255),
-  ItemPrice DECIMAL(5,2),
-  Availability VARCHAR(20),
-  PRIMARY KEY (MenuItemID),
-  FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
-);
-
-
--- enriquez
--- stores versions of an item such as normal or truffle
-CREATE TABLE Variant (
-  VariantID INTEGER,
-  MenuItemID INTEGER,
-  VariantName VARCHAR(50),
-  VariantPrice DECIMAL(5,2),
-  PRIMARY KEY (VariantID),
-  FOREIGN KEY (MenuItemID) REFERENCES MenuItem(MenuItemID)
-);
-
-
--- enriquez
--- stores groups of optional choices such as add on drinks
-CREATE TABLE Modifier (
-  ModifierID INTEGER,
-  ModifierName VARCHAR(50),
-  MinimumSelection INTEGER,
-  MaximumSelection INTEGER,
+-- shows only currently available menu items
+SELECT Category.CategoryName,
+       MenuItem.ItemName,
+       MenuItem.ItemPrice
+FROM MenuItem
+INNER JOIN Category
+ON MenuItem.CategoryID = Category.CategoryID
+WHERE MenuItem.Availability = 'Available'
+ORDER BY Category.CategoryID, MenuItem.MenuItemID;
