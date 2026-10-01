@@ -17,7 +17,7 @@ CREATE TABLE Store (
   StoreID INTEGER,
   StoreName VARCHAR(50),
   StorePhoneNumber VARCHAR(20),
-  StoreAddress VARCHAR(150),
+  StoreAddress VARCHAR(100),
   PRIMARY KEY (StoreID)
 );
 
@@ -91,7 +91,7 @@ CREATE TABLE Variant (
 -- stores groups of optional choices such as add on drinks
 CREATE TABLE Modifier (
   ModifierID INTEGER,
-  ModifierName VARCHAR(50),
+  ModifierName VARCHAR(100),
   MinimumSelection INTEGER,
   MaximumSelection INTEGER,
   PRIMARY KEY (ModifierID)
@@ -145,10 +145,11 @@ CREATE TABLE CartItem (
 
 -- selected modifiers for cart items
 CREATE TABLE CartModifier (
+  CartModifierID INTEGER,
   CartItemID INTEGER,
   ModifierChoiceID INTEGER,
   Quantity INTEGER,
-  PRIMARY KEY (CartItemID, ModifierChoiceID),
+  PRIMARY KEY (CartModifierID),
   FOREIGN KEY (CartItemID) REFERENCES CartItem(CartItemID),
   FOREIGN KEY (ModifierChoiceID) REFERENCES ModifierChoice(ModifierChoiceID)
 );
@@ -157,11 +158,11 @@ CREATE TABLE CartModifier (
 -- stores available promotions
 CREATE TABLE Promotion (
   PromotionID INTEGER,
-  PromoCode VARCHAR(30) UNIQUE,
+  PromoCode VARCHAR(30),
   PromoDescription VARCHAR(150),
   DiscountType VARCHAR(20),
-  DiscountValue DECIMAL(10,2),
-  MinimumSpend DECIMAL(10,2),
+  DiscountValue DECIMAL(5,2),
+  MinimumSpend DECIMAL(5,2),
   PromoStatus VARCHAR(20),
   PRIMARY KEY (PromotionID)
 );
@@ -172,24 +173,15 @@ CREATE TABLE Orders (
   OrderID INTEGER,
   CustomerID INTEGER,
   StoreID INTEGER,
+  PromotionID INTEGER,
   OrderDateTime DATETIME,
   OrderTypeID INTEGER,
   OrderStatus VARCHAR(30),
   PRIMARY KEY (OrderID),
   FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
   FOREIGN KEY (StoreID) REFERENCES Store(StoreID),
+  FOREIGN KEY (PromotionID) REFERENCES Promotion(PromotionID),
   FOREIGN KEY (OrderTypeID) REFERENCES OrderType(OrderTypeID)
-);
-
-
--- records promotions used in an order
-CREATE TABLE OrderPromotion (
-  OrderID INTEGER,
-  PromotionID INTEGER,
-  DiscountAmount DECIMAL(10,2),
-  PRIMARY KEY (OrderID, PromotionID),
-  FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-  FOREIGN KEY (PromotionID) REFERENCES Promotion(PromotionID)
 );
 
 
@@ -211,10 +203,11 @@ CREATE TABLE OrderItem (
 
 -- selected modifiers for completed order items
 CREATE TABLE OrderModifier (
+  OrderModifierID INTEGER,
   OrderItemID INTEGER,
   ModifierChoiceID INTEGER,
   Quantity INTEGER,
-  PRIMARY KEY (OrderItemID, ModifierChoiceID),
+  PRIMARY KEY (OrderModifierID),
   FOREIGN KEY (OrderItemID) REFERENCES OrderItem(OrderItemID),
   FOREIGN KEY (ModifierChoiceID) REFERENCES ModifierChoice(ModifierChoiceID)
 );
@@ -223,7 +216,7 @@ CREATE TABLE OrderModifier (
 -- diaz
 CREATE TABLE Delivery (
   DeliveryID INTEGER,
-  OrderID INTEGER UNIQUE,
+  OrderID INTEGER,
   AddressID INTEGER,
   DeliveryStatus VARCHAR(20),
   DeliveryDateTime DATETIME,
@@ -235,7 +228,7 @@ CREATE TABLE Delivery (
 
 CREATE TABLE Payment (
   PaymentID INTEGER,
-  OrderID INTEGER UNIQUE,
+  OrderID INTEGER,
   PaymentMethodID INTEGER,
   PaymentAmount DECIMAL(10,2),
   PaymentStatus VARCHAR(20),
@@ -531,41 +524,38 @@ INSERT INTO CartItem VALUES
 
 -- modifier currently selected inside carts
 INSERT INTO CartModifier VALUES
-(67002, 63008, 1),
-(67007, 63003, 1);
+(68001, 67002, 63008, 1),
+(68002, 67007, 63003, 1);
 
 
 
 -- 20 sample orders
 
 INSERT INTO Orders VALUES
-(70001, 10001, 20001, '2026-09-28 11:30:00', 2, 'Completed'),
-(70002, 10002, 20002, '2026-09-28 12:15:00', 1, 'Completed'),
-(70003, 10003, 20003, '2026-09-28 13:20:00', 2, 'Completed'),
-(70004, 10004, 20004, '2026-09-28 14:10:00', 1, 'Completed'),
-(70005, 10005, 20001, '2026-09-28 15:40:00', 2, 'Completed'),
-(70006, 10006, 20002, '2026-09-28 17:00:00', 1, 'Completed'),
-(70007, 10007, 20003, '2026-09-28 18:15:00', 2, 'Completed'),
-(70008, 10008, 20004, '2026-09-28 19:30:00', 1, 'Completed'),
-(70009, 10009, 20001, '2026-09-29 11:10:00', 2, 'Completed'),
-(70010, 10010, 20002, '2026-09-29 12:25:00', 1, 'Completed'),
-(70011, 10001, 20003, '2026-09-29 13:50:00', 2, 'Completed'),
-(70012, 10002, 20004, '2026-09-29 14:40:00', 1, 'Completed'),
-(70013, 10003, 20001, '2026-09-29 16:15:00', 2, 'Completed'),
-(70014, 10004, 20002, '2026-09-29 17:25:00', 1, 'Completed'),
-(70015, 10005, 20003, '2026-09-29 18:30:00', 2, 'Completed'),
-(70016, 10006, 20004, '2026-09-30 11:45:00', 1, 'Completed'),
-(70017, 10007, 20001, '2026-09-30 13:05:00', 2, 'Preparing'),
-(70018, 10008, 20002, '2026-09-30 14:20:00', 1, 'Completed'),
-(70019, 10009, 20003, '2026-09-30 17:35:00', 2, 'On the way'),
-(70020, 10010, 20004, '2026-09-30 19:00:00', 1, 'Preparing');
+(70001, 10001, 20001, NULL, '2026-09-28 11:30:00', 2, 'Completed'),
+(70002, 10002, 20002, NULL, '2026-09-28 12:15:00', 1, 'Completed'),
+(70003, 10003, 20003, NULL, '2026-09-28 13:20:00', 2, 'Completed'),
+(70004, 10004, 20004, NULL, '2026-09-28 14:10:00', 1, 'Completed'),
+(70005, 10005, 20001, NULL, '2026-09-28 15:40:00', 2, 'Completed'),
+(70006, 10006, 20002, NULL, '2026-09-28 17:00:00', 1, 'Completed'),
+(70007, 10007, 20003, NULL, '2026-09-28 18:15:00', 2, 'Completed'),
+(70008, 10008, 20004, NULL, '2026-09-28 19:30:00', 1, 'Completed'),
+(70009, 10009, 20001, NULL, '2026-09-29 11:10:00', 2, 'Completed'),
+(70010, 10010, 20002, NULL, '2026-09-29 12:25:00', 1, 'Completed'),
+(70011, 10001, 20003, NULL, '2026-09-29 13:50:00', 2, 'Completed'),
+(70012, 10002, 20004, NULL, '2026-09-29 14:40:00', 1, 'Completed'),
+(70013, 10003, 20001, NULL, '2026-09-29 16:15:00', 2, 'Completed'),
+(70014, 10004, 20002, NULL, '2026-09-29 17:25:00', 1, 'Completed'),
+(70015, 10005, 20003, 94001, '2026-09-29 18:30:00', 2, 'Completed'),
+(70016, 10006, 20004, NULL, '2026-09-30 11:45:00', 1, 'Completed'),
+(70017, 10007, 20001, NULL, '2026-09-30 13:05:00', 2, 'Preparing'),
+(70018, 10008, 20002, NULL, '2026-09-30 14:20:00', 1, 'Completed'),
+(70019, 10009, 20003, NULL, '2026-09-30 17:35:00', 2, 'On the way'),
+(70020, 10010, 20004, NULL, '2026-09-30 19:00:00', 1, 'Preparing');
 
 
 
--- promotion used by order 70015
-
-INSERT INTO OrderPromotion VALUES
-(70015, 94001, 8.00);
+-- order 70015 uses promotion 94001 (WELCOME8) through Orders.PromotionID
 
 
 
@@ -635,7 +625,7 @@ INSERT INTO OrderItem VALUES
 -- modifiers selected for completed orders
 
 INSERT INTO OrderModifier VALUES
-(80019, 63008, 1);
+(85001, 80019, 63008, 1);
 
 
 
@@ -905,14 +895,13 @@ SELECT Orders.OrderID,
        Customer.CustomerName,
        Promotion.PromoCode,
        Promotion.PromoDescription,
-       OrderPromotion.DiscountAmount
-FROM OrderPromotion
-INNER JOIN Orders
-ON OrderPromotion.OrderID = Orders.OrderID
+       Promotion.DiscountType,
+       Promotion.DiscountValue
+FROM Orders
 INNER JOIN Customer
 ON Orders.CustomerID = Customer.CustomerID
 INNER JOIN Promotion
-ON OrderPromotion.PromotionID = Promotion.PromotionID;
+ON Orders.PromotionID = Promotion.PromotionID;
 
 
 -- shows customer saved addresses
@@ -949,7 +938,8 @@ SELECT Customer.CustomerName,
        Payment.PaymentAmount,
        Payment.PaymentStatus,
        PaymentMethod.MethodType,
-       PaymentMethod.CardCompany
+       PaymentMethod.CardCompany,
+       PaymentMethod.CardLastFour
 FROM Payment
 INNER JOIN Orders
 ON Payment.OrderID = Orders.OrderID
