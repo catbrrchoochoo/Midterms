@@ -1,5 +1,6 @@
 -- hellooo, add comment with your last name before each entity like ginawa ko below so kabalo ko aha mo naghelp
 
+
 -- bayquen
 CREATE TABLE Customer (
   CustomerID INTEGER,
@@ -10,6 +11,7 @@ CREATE TABLE Customer (
   PRIMARY KEY (CustomerID)
 );
 
+
 -- bayquen
 CREATE TABLE Store (
   StoreID INTEGER,
@@ -19,12 +21,14 @@ CREATE TABLE Store (
   PRIMARY KEY (StoreID)
 );
 
+
 -- atienza
-CREATE TABLE OrderType ( 
-  OrderTypeID INTEGER, 
+CREATE TABLE OrderType (
+  OrderTypeID INTEGER,
   OrderTypeName VARCHAR(30),
   PRIMARY KEY (OrderTypeID)
 );
+
 
 -- diaz
 CREATE TABLE Category (
@@ -32,6 +36,7 @@ CREATE TABLE Category (
   CategoryName VARCHAR(50),
   PRIMARY KEY (CategoryID)
 );
+
 
 -- atienza
 CREATE TABLE AddressBook (
@@ -45,6 +50,7 @@ CREATE TABLE AddressBook (
   FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
+
 -- bayquen
 CREATE TABLE PaymentMethod (
   PaymentMethodID INTEGER,
@@ -56,6 +62,7 @@ CREATE TABLE PaymentMethod (
   FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
+
 CREATE TABLE MenuItem (
   MenuItemID INTEGER,
   CategoryID INTEGER,
@@ -66,6 +73,54 @@ CREATE TABLE MenuItem (
   PRIMARY KEY (MenuItemID),
   FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
+
+
+-- enriquez
+-- stores different versions of a menu item such as normal or truffle
+CREATE TABLE MenuItemVariant (
+  VariantID INTEGER,
+  MenuItemID INTEGER,
+  VariantName VARCHAR(50),
+  VariantPrice DECIMAL(5,2),
+  PRIMARY KEY (VariantID),
+  FOREIGN KEY (MenuItemID) REFERENCES MenuItem(MenuItemID)
+);
+
+
+-- enriquez
+-- stores groups of optional add-ons
+CREATE TABLE ModifierGroup (
+  ModifierGroupID INTEGER,
+  ModifierGroupName VARCHAR(50),
+  MinimumSelection INTEGER,
+  MaximumSelection INTEGER,
+  PRIMARY KEY (ModifierGroupID)
+);
+
+
+-- enriquez
+-- stores choices inside each modifier group
+CREATE TABLE ModifierOption (
+  ModifierOptionID INTEGER,
+  ModifierGroupID INTEGER,
+  ModifierOptionName VARCHAR(100),
+  AdditionalPrice DECIMAL(5,2),
+  PRIMARY KEY (ModifierOptionID),
+  FOREIGN KEY (ModifierGroupID) REFERENCES ModifierGroup(ModifierGroupID)
+);
+
+
+-- enriquez
+-- connects menu items to the modifier groups available for them
+CREATE TABLE MenuItemModifier (
+  MenuItemModifierID INTEGER,
+  MenuItemID INTEGER,
+  ModifierGroupID INTEGER,
+  PRIMARY KEY (MenuItemModifierID),
+  FOREIGN KEY (MenuItemID) REFERENCES MenuItem(MenuItemID),
+  FOREIGN KEY (ModifierGroupID) REFERENCES ModifierGroup(ModifierGroupID)
+);
+
 
 -- renamed
 CREATE TABLE Orders (
@@ -81,18 +136,35 @@ CREATE TABLE Orders (
   FOREIGN KEY (OrderTypeID) REFERENCES OrderType(OrderTypeID)
 );
 
+
 -- diaz
 CREATE TABLE OrderItem (
   OrderItemID INTEGER,
   OrderID INTEGER,
   MenuItemID INTEGER,
+  VariantID INTEGER,
   Quantity INTEGER,
   UnitPrice DECIMAL(5,2),
   Subtotal DECIMAL(10,2),
   PRIMARY KEY (OrderItemID),
   FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-  FOREIGN KEY (MenuItemID) REFERENCES MenuItem(MenuItemID)
+  FOREIGN KEY (MenuItemID) REFERENCES MenuItem(MenuItemID),
+  FOREIGN KEY (VariantID) REFERENCES MenuItemVariant(VariantID)
 );
+
+
+-- enriquez
+-- records modifiers actually selected by a customer
+CREATE TABLE OrderItemModifier (
+  OrderItemModifierID INTEGER,
+  OrderItemID INTEGER,
+  ModifierOptionID INTEGER,
+  Quantity INTEGER,
+  PRIMARY KEY (OrderItemModifierID),
+  FOREIGN KEY (OrderItemID) REFERENCES OrderItem(OrderItemID),
+  FOREIGN KEY (ModifierOptionID) REFERENCES ModifierOption(ModifierOptionID)
+);
+
 
 -- diaz
 CREATE TABLE Delivery (
@@ -106,6 +178,7 @@ CREATE TABLE Delivery (
   FOREIGN KEY (AddressID) REFERENCES AddressBook(AddressID)
 );
 
+
 CREATE TABLE Payment (
   PaymentID INTEGER,
   OrderID INTEGER,
@@ -118,7 +191,9 @@ CREATE TABLE Payment (
 );
 
 
+
 -- insert data next
+
 
 INSERT INTO Customer VALUES
 (10001, 'Rin Kusigaki', 'RKusigaki@email.com', '+6599183282', NULL),
@@ -189,6 +264,7 @@ INSERT INTO PaymentMethod VALUES
 (50008, 10008, 'Card', 'Mastercard', '2045'),
 (50009, 10009, 'Card', 'Visa', '7244'),
 (50010, 10010, 'Card', 'Mastercard', '9115');
+
 
 
 -- all menu items shown on the brotzeit online menu
@@ -329,6 +405,42 @@ INSERT INTO MenuItem VALUES
 (60104, 30015, 'WILD Altes Pflimli-Gold (Old Plum)', 'Alc. 35%, 0.7L', 98.00, 'Available');
 
 
+
+-- actual item variants found in the brotzeit source code
+INSERT INTO MenuItemVariant VALUES
+(61001, 60051, 'Normal', 10.00),
+(61002, 60051, 'Truffle', 12.00),
+(61003, 60057, 'Normal', 8.50),
+(61004, 60057, 'Truffle', 10.00);
+
+
+
+-- actual modifier group found in the brotzeit ordering site
+INSERT INTO ModifierGroup VALUES
+(62001, 'Add on Drinks', 0, 100);
+
+
+INSERT INTO ModifierOption VALUES
+(63001, 62001, 'BRLO Ciders Róse', 12.00),
+(63002, 62001, 'BRLO Ciders Wild Berries', 12.00),
+(63003, 62001, 'Warsteiner Fresh (0% Alc)', 11.00),
+(63004, 62001, 'BRLO Grapefruit "Splash" Radler', 12.00),
+(63005, 62001, 'Wostok 0.33L Organic Pear-Rosemary', 11.00),
+(63006, 62001, 'Wostok 0.33L Organic Lemon-mint', 11.00),
+(63007, 62001, 'Wostok 0.33L Date-Pomegranate', 11.00),
+(63008, 62001, 'SPEZI 0.33L', 7.00);
+
+
+-- sample menu items that have the add on drinks option
+INSERT INTO MenuItemModifier VALUES
+(64001, 60019, 62001),
+(64002, 60023, 62001),
+(64003, 60038, 62001),
+(64004, 60043, 62001),
+(64005, 60055, 62001);
+
+
+
 -- 20 sample orders
 INSERT INTO Orders VALUES
 (70001, 10001, 20001, '2026-09-28 11:30:00', 2, 'Completed'),
@@ -353,65 +465,81 @@ INSERT INTO Orders VALUES
 (70020, 10010, 20004, '2026-09-30 19:00:00', 1, 'Preparing');
 
 
+
 -- items included in the 20 orders
+-- variantid is null when the item has no selected variant
 INSERT INTO OrderItem VALUES
-(80001, 70001, 60015, 1, 45.00, 45.00),
-(80002, 70001, 60051, 1, 10.00, 10.00),
+(80001, 70001, 60015, NULL, 1, 45.00, 45.00),
 
-(80003, 70002, 60019, 1, 42.00, 42.00),
-(80004, 70002, 60078, 2, 7.00, 14.00),
+-- truffle fries
+(80002, 70001, 60051, 61002, 1, 12.00, 12.00),
 
-(80005, 70003, 60025, 1, 45.00, 45.00),
-(80006, 70003, 60039, 2, 5.00, 10.00),
+(80003, 70002, 60019, NULL, 1, 42.00, 42.00),
+(80004, 70002, 60078, NULL, 2, 7.00, 14.00),
 
-(80007, 70004, 60004, 1, 158.00, 158.00),
+(80005, 70003, 60025, NULL, 1, 45.00, 45.00),
+(80006, 70003, 60039, NULL, 2, 5.00, 10.00),
 
-(80008, 70005, 60021, 2, 29.50, 59.00),
+(80007, 70004, 60004, NULL, 1, 158.00, 158.00),
 
-(80009, 70006, 60032, 1, 36.00, 36.00),
-(80010, 70006, 60066, 1, 16.00, 16.00),
+(80008, 70005, 60021, NULL, 2, 29.50, 59.00),
 
-(80011, 70007, 60069, 2, 24.00, 48.00),
-(80012, 70007, 60077, 2, 7.00, 14.00),
+(80009, 70006, 60032, NULL, 1, 36.00, 36.00),
+(80010, 70006, 60066, NULL, 1, 16.00, 16.00),
 
-(80013, 70008, 60050, 1, 23.00, 23.00),
-(80014, 70008, 60059, 1, 8.50, 8.50),
+(80011, 70007, 60069, NULL, 2, 24.00, 48.00),
+(80012, 70007, 60077, NULL, 2, 7.00, 14.00),
 
-(80015, 70009, 60003, 1, 168.00, 168.00),
+(80013, 70008, 60050, NULL, 1, 23.00, 23.00),
 
-(80016, 70010, 60015, 1, 45.00, 45.00),
-(80017, 70010, 60066, 1, 16.00, 16.00),
-(80018, 70010, 60078, 1, 7.00, 7.00),
+-- normal mashed potatoes
+(80014, 70008, 60057, 61003, 1, 8.50, 8.50),
 
-(80019, 70011, 60038, 1, 45.00, 45.00),
-(80020, 70011, 60041, 1, 18.00, 18.00),
+(80015, 70009, 60003, NULL, 1, 168.00, 168.00),
 
-(80021, 70012, 60033, 1, 29.50, 29.50),
-(80022, 70012, 60063, 1, 6.00, 6.00),
-(80023, 70012, 60079, 1, 7.00, 7.00),
+(80016, 70010, 60015, NULL, 1, 45.00, 45.00),
+(80017, 70010, 60066, NULL, 1, 16.00, 16.00),
+(80018, 70010, 60078, NULL, 1, 7.00, 7.00),
 
-(80024, 70013, 60017, 1, 145.00, 145.00),
-(80025, 70013, 60066, 2, 16.00, 32.00),
+(80019, 70011, 60038, NULL, 1, 45.00, 45.00),
+(80020, 70011, 60041, NULL, 1, 18.00, 18.00),
 
-(80026, 70014, 60026, 2, 20.00, 40.00),
-(80027, 70014, 60051, 1, 10.00, 10.00),
+(80021, 70012, 60033, NULL, 1, 29.50, 29.50),
+(80022, 70012, 60063, NULL, 1, 6.00, 6.00),
+(80023, 70012, 60079, NULL, 1, 7.00, 7.00),
 
-(80028, 70015, 60001, 1, 598.00, 598.00),
+(80024, 70013, 60017, NULL, 1, 145.00, 145.00),
+(80025, 70013, 60066, NULL, 2, 16.00, 32.00),
 
-(80029, 70016, 60024, 1, 34.00, 34.00),
-(80030, 70016, 60057, 1, 8.50, 8.50),
+(80026, 70014, 60026, NULL, 2, 20.00, 40.00),
+(80027, 70014, 60051, 61001, 1, 10.00, 10.00),
 
-(80031, 70017, 60008, 1, 28.00, 28.00),
-(80032, 70017, 60055, 1, 10.00, 10.00),
-(80033, 70017, 60078, 2, 7.00, 14.00),
+(80028, 70015, 60001, NULL, 1, 598.00, 598.00),
 
-(80034, 70018, 60018, 1, 120.00, 120.00),
-(80035, 70018, 60067, 1, 13.50, 13.50),
+(80029, 70016, 60024, NULL, 1, 34.00, 34.00),
 
-(80036, 70019, 60029, 2, 21.50, 43.00),
-(80037, 70019, 60059, 1, 8.50, 8.50),
+-- truffle mashed potatoes
+(80030, 70016, 60057, 61004, 1, 10.00, 10.00),
 
-(80038, 70020, 60014, 1, 330.00, 330.00);
+(80031, 70017, 60008, NULL, 1, 28.00, 28.00),
+(80032, 70017, 60055, NULL, 1, 10.00, 10.00),
+(80033, 70017, 60078, NULL, 2, 7.00, 14.00),
+
+(80034, 70018, 60018, NULL, 1, 120.00, 120.00),
+(80035, 70018, 60067, NULL, 1, 13.50, 13.50),
+
+(80036, 70019, 60029, NULL, 2, 21.50, 43.00),
+(80037, 70019, 60059, NULL, 1, 8.50, 8.50),
+
+(80038, 70020, 60014, NULL, 1, 330.00, 330.00);
+
+
+
+-- sample actual modifier selected by a customer
+-- order 70011 added a spezi drink to brotzeit to share
+INSERT INTO OrderItemModifier VALUES
+(65001, 80019, 63008, 1);
+
 
 
 -- only delivery orders have delivery records
@@ -428,9 +556,10 @@ INSERT INTO Delivery VALUES
 (90010, 70019, 40009, 'On the way', '2026-09-30 18:30:00');
 
 
+
 -- one payment for every order
 INSERT INTO Payment VALUES
-(91001, 70001, 50001, 55.00, 'Paid'),
+(91001, 70001, 50001, 57.00, 'Paid'),
 (91002, 70002, 50002, 56.00, 'Paid'),
 (91003, 70003, 50003, 55.00, 'Paid'),
 (91004, 70004, 50004, 158.00, 'Paid'),
@@ -440,37 +569,47 @@ INSERT INTO Payment VALUES
 (91008, 70008, 50008, 31.50, 'Paid'),
 (91009, 70009, 50009, 168.00, 'Paid'),
 (91010, 70010, 50010, 68.00, 'Paid'),
-(91011, 70011, 50001, 63.00, 'Paid'),
+
+-- includes the $7 spezi modifier
+(91011, 70011, 50001, 70.00, 'Paid'),
+
 (91012, 70012, 50002, 42.50, 'Paid'),
 (91013, 70013, 50003, 177.00, 'Paid'),
 (91014, 70014, 50004, 50.00, 'Paid'),
 (91015, 70015, 50005, 598.00, 'Paid'),
-(91016, 70016, 50006, 42.50, 'Paid'),
+(91016, 70016, 50006, 44.00, 'Paid'),
 (91017, 70017, 50007, 52.00, 'Paid'),
 (91018, 70018, 50008, 133.50, 'Paid'),
 (91019, 70019, 50009, 51.50, 'Paid'),
 (91020, 70020, 50010, 330.00, 'Paid');
 
 
+
 -- shows all customer records
 SELECT * FROM Customer;
+
 
 -- shows all store records
 SELECT * FROM Store;
 
+
 -- shows the available order types such as pickup and delivery
 SELECT * FROM OrderType;
+
 
 -- shows all menu categories
 SELECT * FROM Category;
 
+
 -- shows all saved customer addresses
 SELECT * FROM AddressBook;
+
 
 -- shows all saved customer payment methods
 SELECT * FROM PaymentMethod;
 
--- shows all menu items together with their category name
+
+-- shows all menu items together with their readable category name
 SELECT MenuItem.MenuItemID,
        MenuItem.CategoryID,
        Category.CategoryName,
@@ -483,30 +622,57 @@ INNER JOIN Category
 ON MenuItem.CategoryID = Category.CategoryID
 ORDER BY Category.CategoryID, MenuItem.MenuItemID;
 
+
+-- shows all item variants such as normal and truffle
+SELECT MenuItem.ItemName,
+       MenuItemVariant.VariantID,
+       MenuItemVariant.VariantName,
+       MenuItemVariant.VariantPrice
+FROM MenuItemVariant
+INNER JOIN MenuItem
+ON MenuItemVariant.MenuItemID = MenuItem.MenuItemID
+ORDER BY MenuItem.MenuItemID, MenuItemVariant.VariantID;
+
+
+-- shows all modifier groups and their choices
+SELECT ModifierGroup.ModifierGroupName,
+       ModifierOption.ModifierOptionID,
+       ModifierOption.ModifierOptionName,
+       ModifierOption.AdditionalPrice
+FROM ModifierOption
+INNER JOIN ModifierGroup
+ON ModifierOption.ModifierGroupID = ModifierGroup.ModifierGroupID
+ORDER BY ModifierGroup.ModifierGroupID, ModifierOption.ModifierOptionID;
+
+
+-- shows which menu items support modifier groups
+SELECT MenuItem.ItemName,
+       ModifierGroup.ModifierGroupName
+FROM MenuItemModifier
+INNER JOIN MenuItem
+ON MenuItemModifier.MenuItemID = MenuItem.MenuItemID
+INNER JOIN ModifierGroup
+ON MenuItemModifier.ModifierGroupID = ModifierGroup.ModifierGroupID;
+
+
 -- shows all customer orders
 SELECT * FROM Orders;
+
 
 -- shows all individual items included in orders
 SELECT * FROM OrderItem;
 
+
+-- shows all selected order item modifiers
+SELECT * FROM OrderItemModifier;
+
+
 -- shows all delivery records
 SELECT * FROM Delivery;
 
+
 -- shows all payment records
 SELECT * FROM Payment;
-
-
--- shows the entire menu with readable category names
-SELECT Category.CategoryName,
-       MenuItem.MenuItemID,
-       MenuItem.ItemName,
-       MenuItem.ItemDescription,
-       MenuItem.ItemPrice,
-       MenuItem.Availability
-FROM MenuItem
-INNER JOIN Category
-ON MenuItem.CategoryID = Category.CategoryID
-ORDER BY Category.CategoryID, MenuItem.MenuItemID;
 
 
 -- shows which customer made each order and its status
@@ -519,7 +685,7 @@ INNER JOIN Orders
 ON Customer.CustomerID = Orders.CustomerID;
 
 
--- shows each order together with the customer, store, and order type
+-- shows each order together with the customer, store and order type
 SELECT Customer.CustomerName,
        Orders.OrderID,
        Store.StoreName,
@@ -535,9 +701,10 @@ INNER JOIN OrderType
 ON Orders.OrderTypeID = OrderType.OrderTypeID;
 
 
--- shows the menu items included in every order and their quantity and price
+-- shows ordered items including the selected variant
 SELECT Orders.OrderID,
        MenuItem.ItemName,
+       MenuItemVariant.VariantName,
        OrderItem.Quantity,
        OrderItem.UnitPrice,
        OrderItem.Subtotal
@@ -546,13 +713,16 @@ INNER JOIN Orders
 ON OrderItem.OrderID = Orders.OrderID
 INNER JOIN MenuItem
 ON OrderItem.MenuItemID = MenuItem.MenuItemID
+LEFT JOIN MenuItemVariant
+ON OrderItem.VariantID = MenuItemVariant.VariantID
 ORDER BY Orders.OrderID, OrderItem.OrderItemID;
 
 
--- shows the category name together with every item included in an order
+-- shows ordered items together with category name
 SELECT Orders.OrderID,
        Category.CategoryName,
        MenuItem.ItemName,
+       MenuItemVariant.VariantName,
        OrderItem.Quantity,
        OrderItem.UnitPrice,
        OrderItem.Subtotal
@@ -563,7 +733,29 @@ INNER JOIN MenuItem
 ON OrderItem.MenuItemID = MenuItem.MenuItemID
 INNER JOIN Category
 ON MenuItem.CategoryID = Category.CategoryID
+LEFT JOIN MenuItemVariant
+ON OrderItem.VariantID = MenuItemVariant.VariantID
 ORDER BY Orders.OrderID, OrderItem.OrderItemID;
+
+
+-- shows modifiers selected for ordered items
+SELECT Orders.OrderID,
+       MenuItem.ItemName,
+       ModifierGroup.ModifierGroupName,
+       ModifierOption.ModifierOptionName,
+       ModifierOption.AdditionalPrice,
+       OrderItemModifier.Quantity
+FROM OrderItemModifier
+INNER JOIN OrderItem
+ON OrderItemModifier.OrderItemID = OrderItem.OrderItemID
+INNER JOIN Orders
+ON OrderItem.OrderID = Orders.OrderID
+INNER JOIN MenuItem
+ON OrderItem.MenuItemID = MenuItem.MenuItemID
+INNER JOIN ModifierOption
+ON OrderItemModifier.ModifierOptionID = ModifierOption.ModifierOptionID
+INNER JOIN ModifierGroup
+ON ModifierOption.ModifierGroupID = ModifierGroup.ModifierGroupID;
 
 
 -- shows each customer together with their saved address
