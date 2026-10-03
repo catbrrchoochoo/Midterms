@@ -1,6 +1,3 @@
--- hellooo, add comment with your last name before each entity like ginawa ko below so kabalo ko aha mo naghelp
-
-
 -- bayquen
 CREATE TABLE Customer (
   CustomerID INTEGER,
