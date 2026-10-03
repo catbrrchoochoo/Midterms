@@ -297,7 +297,8 @@ INSERT INTO AddressBook VALUES
 (40007, 10007, '16 Market Street', 'Home', '#06-10', '048940'),
 (40008, 10008, '5 Purvis Street', 'Office', '#18-06', '188584'),
 (40009, 10009, '28 Beach Road', 'Home', '#07-02', '189762'),
-(40010, 10010, '2 Marina Boulevard', 'Office', '#02-13', '018987');
+(40010, 10010, '2 Marina Boulevard', 'Office', '#02-13', '018987'),
+(40011, 10001, '67 Tung Tung Sahur', 'Work', NULL, NULL);
 
 
 INSERT INTO PaymentMethod VALUES
@@ -307,8 +308,8 @@ INSERT INTO PaymentMethod VALUES
 (50004, 10004, 'Card', 'Mastercard', '5512'),
 (50005, 10005, 'Card', 'Visa', '8803'),
 (50006, 10006, 'Card', 'Mastercard', '5680'),
-(50007, 10007, 'Card', 'Visa', '6610'),
-(50008, 10008, 'Card', 'Mastercard', '2045'),
+(50007, 10007, 'Cash', NULL, NULL),
+(50008, 10008, 'Cash', NULL, NULL),
 (50009, 10009, 'Card', 'Visa', '7244'),
 (50010, 10010, 'Card', 'Mastercard', '9115');
 
